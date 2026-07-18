@@ -179,6 +179,8 @@ Address:   d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe
 Status:    ✅ Deployed & Verified
 ```
 
+![Contract Deployed](assets/contract_deployed.png)
+
 - 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe)
 
 > [!WARNING]
@@ -220,6 +222,8 @@ Prover & verifier keys → contract/src/managed/election/keys/
 ZKIR files            → contract/src/managed/election/zkir/
 TypeScript bindings   → contract/src/managed/election/contract/
 ```
+
+![Successful Compile Output](assets/compile_output.png)
 
 </details>
 
@@ -307,10 +311,10 @@ In the **Dashboard** (`/dashboard`):
 
 | Requirement | Status | Evidence |
 |---|---|---|
-| Toolchain installed & `compact compile` works | ✅ Done | Compile output with circuits listed |
+| Toolchain installed & `compact compile` works | ✅ Done | [Compile output with circuits listed](assets/compile_output.png) |
 | Passing test suite | ✅ Done | 6/6 tests passing via `vitest` |
 | Generated `managed/` directory present | ✅ Done | Circuits + keys checked into repo |
-| Contract deployed to Preprod | ✅ Done | Address documented above |
+| Contract deployed to Preprod | ✅ Done | [Address documented above](assets/contract_deployed.png) |
 | Initial product idea paragraph | ✅ Done | See [Product Vision](#-product-vision) |
 | Public state vs. private witness explanation | ✅ Done | See [detailed section](#-public-state-vs-private-witness) |
 | Minimum 5 meaningful commits | ✅ Done | See commit history below |
