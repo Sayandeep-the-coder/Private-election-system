@@ -1,0 +1,14 @@
+{
+  "name": "@private-election-system/contract",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@midnight-ntwrk/compact-runtime": "0.16.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}

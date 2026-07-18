@@ -1,0 +1,90 @@
+pragma language_version >= 0.21.0;
+
+import CompactStandardLibrary;
+
+export ledger pollQuestion: Opaque<"string">;
+export ledger pollOptions: Opaque<"string">;
+export ledger allowlistRoot: Field;
+export ledger adminKeyHash: Bytes<32>;
+export ledger votingClosed: Boolean;
+export ledger tallies: Map<Uint<8>, Uint<64>>;
+export ledger nullifiers: Set<Bytes<32>>;
+
+struct SiblingLeaf { domain_sep: Bytes<6>, data: Bytes<32> }
+
+witness voterSecret(): Bytes<32>;
+witness merklePath(leaf: Bytes<32>): MerkleTreePath<10, Bytes<32>>;
+witness adminSecret(): Bytes<32>;
+
+export pure circuit deriveAdminKey(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([pad(32, "election:admin:v1"), sk]);
+}
+
+export pure circuit calculateCommitment(sk: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<2, Bytes<32>>>([
+    pad(32, "election:commitment:v1"),
+    sk
+  ]);
+}
+
+export pure circuit calculateNullifier(sk: Bytes<32>, electionId: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>([
+    pad(32, "election:nullifier:v1"),
+    electionId,
+    sk
+  ]);
+}
+
+export pure circuit hashLeaf(leaf: Bytes<32>): Field {
+  return degradeToTransient(persistentHash<SiblingLeaf>(SiblingLeaf { domain_sep: pad(6, "mdn:lh"), data: leaf }));
+}
+
+export pure circuit hashSiblings(left: Field, right: Field): Field {
+  return transientHash<Vector<2, Field>>([left, right]);
+}
+
+constructor(
+  _question: Opaque<"string">,
+  _options: Opaque<"string">,
+  _adminKeyHash: Bytes<32>,
+  _allowlistRoot: Field
+) {
+  pollQuestion = disclose(_question);
+  pollOptions = disclose(_options);
+  adminKeyHash = disclose(_adminKeyHash);
+  allowlistRoot = disclose(_allowlistRoot);
+  votingClosed = false;
+}
+
+circuit getTally(opt: Uint<8>): Uint<64> {
+  if (tallies.member(opt)) {
+    return tallies.lookup(opt);
+  } else {
+    return 0;
+  }
+}
+
+export circuit castVote(choiceIdx: Uint<8>, electionId: Bytes<32>): [] {
+  assert(!votingClosed, "Voting has ended");
+  assert(choiceIdx < 16, "Choice index out of bounds");
+
+  const sk = voterSecret();
+  const leaf = calculateCommitment(sk);
+  const path = merklePath(leaf);
+
+  assert(path.leaf == leaf, "Path is not for this leaf");
+  assert(allowlistRoot == disclose(merkleTreePathRoot<10, Bytes<32>>(path).field), "Voter not on allowlist");
+
+  const nul = calculateNullifier(sk, electionId);
+  assert(!nullifiers.member(disclose(nul)), "Vote already cast");
+  nullifiers.insert(disclose(nul));
+
+  const opt = disclose(choiceIdx);
+  const currentTally = getTally(opt);
+  tallies.insert(opt, (currentTally + 1) as Uint<64>);
+}
+
+export circuit closeElection(): [] {
+  assert(adminKeyHash == deriveAdminKey(adminSecret()), "Unauthorized admin key");
+  votingClosed = disclose(true);
+}
