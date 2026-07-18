@@ -181,7 +181,7 @@ Status:    ✅ Deployed & Verified
 
 ![Contract Deployed](assets/contract_deployed.png)
 
-- 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe)
+- 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contracts/d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe)
 
 > [!WARNING]
 > **Troubleshooting Block Explorer 404 Errors:**
