@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/Zero--Knowledge-Proofs-05b169?style=for-the-badge" alt="ZK Proofs" />
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/Tests-6%20Passing-05b169?style=for-the-badge" alt="Tests" />
+  <img src="https://github.com/Sayandeep-the-coder/Private-election-system/actions/workflows/ci.yml/badge.svg" alt="CI/CD Status" />
 </p>
 
 <h1 align="center">🗳️ ShadowVote</h1>
