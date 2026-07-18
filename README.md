@@ -13,6 +13,24 @@
   <i>Cast anonymous, mathematically verified ballots without revealing your identity, wallet address, or candidate choice — to anyone.</i>
 </p>
 
+<p align="center">
+  <a href="https://private-election-system-dapp.vercel.app/">
+    <img src="https://img.shields.io/badge/🌐_Live_Demo-private--election--system--dapp.vercel.app-05b169?style=for-the-badge" alt="Live Demo" />
+  </a>
+</p>
+
+---
+
+## 🎬 Demo Video
+
+<p align="center">
+  <a href="https://drive.google.com/file/d/1j5HblgAsokcVRnntsQVyWIrtLGdOjPeJ/view?usp=drive_link">
+    <img src="https://drive.google.com/thumbnail?id=1j5HblgAsokcVRnntsQVyWIrtLGdOjPeJ&sz=w1280" alt="ShadowVote Demo Video" width="720" />
+    <br/>
+    <img src="https://img.shields.io/badge/▶_Watch_Demo-Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white" alt="Watch Demo on Google Drive" />
+  </a>
+</p>
+
 ---
 
 ## 💡 Product Vision
