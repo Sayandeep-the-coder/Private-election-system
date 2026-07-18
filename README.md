@@ -321,25 +321,104 @@ In the **Dashboard** (`/dashboard`):
 
 ---
 
-## ✅ Submission Checklist
+## ✅ Grant Submission Checklist
 
-| Requirement | Status | Evidence |
+| # | Requirement | Status | Evidence |
+|---|---|---|---|
+| 1 | **Fully functional dApp that meaningfully uses Midnight's privacy model** | ✅ Done | ZK contract ([`election.compact`](contract/src/election.compact)) + 5-page Next.js frontend deployed to [Vercel](https://private-election-system-dapp.vercel.app/) and [Preprod Testnet](assets/contract_deployed.png). Uses Midnight's witness/disclose model for anonymous ballots, Merkle membership proofs, and nullifier-based double-vote prevention. |
+| 2 | **Minimum 3 tests passing** | ✅ Done | **6/6 tests passing** via `vitest run` — admin key derivation, voter commitment, nullifier uniqueness, leaf hashing, sibling hashing, full Merkle root computation. See [`election.test.ts`](contract/src/election.test.ts). |
+| 3 | **CI/CD pipeline running (workflow file + passing runs)** | ✅ Done | GitHub Actions workflow at [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — 3-job pipeline: Contract Tests → DApp Build → DApp Lint. Runs on every push and PR. |
+| 4 | **Approved idea submitted from the provided idea list** | ✅ Done | **Private Voting** — "anonymous ballots with publicly verifiable tallies". Point-by-point proof in [Comparison section](#-comparison-shadowvote-vs-typical-private-voting-implementations). |
+| 5 | **Minimum 10 meaningful commits** | ✅ Done | **18 meaningful commits** — see [Commit History](#-commit-history) below. |
+
+### Additional Evidence
+
+| Item | Status | Detail |
 |---|---|---|
-| Toolchain installed & `compact compile` works | ✅ Done | [Compile output with circuits listed](assets/compile_output.png) |
-| Passing test suite | ✅ Done | 6/6 tests passing via `vitest` |
-| Generated `managed/` directory present | ✅ Done | Circuits + keys checked into repo |
-| Contract deployed to Preprod | ✅ Done | [Address documented above](assets/contract_deployed.png) |
-| Initial product idea paragraph | ✅ Done | See [Product Vision](#-product-vision) |
-| Public state vs. private witness explanation | ✅ Done | See [detailed section](#-public-state-vs-private-witness) |
-| Minimum 5 meaningful commits | ✅ Done | See commit history below |
-| Public GitHub repo with README.md | ✅ Done | You're reading it |
-| Setup instructions | ✅ Done | See [Setup & Run Locally](#-setup--run-locally) |
+| Toolchain installed & `compact compile` works | ✅ | [Compile output with circuits listed](assets/compile_output.png) |
+| Generated `managed/` directory present | ✅ | Circuits + keys checked into repo |
+| Public state vs. private witness explanation | ✅ | See [detailed section](#-public-state-vs-private-witness) |
+| Public GitHub repo with README.md | ✅ | You're reading it |
+| Setup instructions | ✅ | See [Setup & Run Locally](#-setup--run-locally) |
 
 ---
 
-## 📝 Commit History
+## 🔬 Comparison: ShadowVote vs. Typical "Private Voting" Implementations
+
+> The Midnight project ideas describe **Private Voting** as:
+> *"Anonymous ballots with publicly verifiable tallies."*
+>
+> ShadowVote doesn't just meet this description — it **exceeds** it across every dimension. The table below proves a point-by-point mapping and highlights where ShadowVote goes further.
+
+### Core Requirement Mapping
+
+| Requirement from "Private Voting" | How ShadowVote Implements It | Evidence |
+|---|---|---|
+| **Anonymous ballots** | Voter secret key never leaves the device. The ZK circuit proves membership & choice validity without revealing identity, wallet, or vote. | [`castVote` circuit](contract/src/election.compact) — witness-only `voterSecret()`, no `disclose()` on private data |
+| **Publicly verifiable tallies** | `tallies: Map<Uint<8>, Uint<64>>` is public ledger state — anyone can read real-time candidate counts on-chain. | [Public State table](#-public-state-vs-private-witness) |
+| **Double-vote prevention** | Deterministic nullifier = `hash("election:nullifier:v1", electionId, secret)`. Once spent, the set rejects duplicates. | [`calculateNullifier` circuit](contract/src/election.compact) + `nullifiers: Set<Bytes<32>>` |
+| **Voter eligibility verification** | Off-chain depth-10 Merkle tree of voter commitments. ZK proof verifies `merkleTreePathRoot(path) == allowlistRoot`. | [`merklePath` witness + root assertion](contract/src/election.compact) |
+| **Coercion resistance** | No one — not even the admin — can learn how a voter voted. The `choiceIdx` is private witness data consumed inside the proof. | `disclose(choiceIdx)` only updates the tally counter, never reveals who chose what |
+
+### Where ShadowVote Goes Beyond
+
+| Feature | Typical "Private Voting" Reference | ShadowVote |
+|---|---|---|
+| **Anonymity model** | Wallet-address-based (one-wallet-one-vote). Your wallet identity is linkable to your ballot transaction. | **Commitment-based**. Voters derive a public commitment hash from a secret key. No wallet address, no identity linkage at all. |
+| **Voter registration** | On-chain list of wallet addresses or simple token-gating. Expensive gas for large sets. | **Off-chain Merkle tree** (depth-10, 1,024 slots). Only the 32-byte root is stored on-chain. Registration is free. |
+| **Double-vote mechanism** | Commit–reveal with two separate transaction phases. Voters must return for a reveal phase. | **Single-transaction nullifier** — `hash(secret, electionId)`. One circuit call, one proof, done. No reveal phase needed. |
+| **Hash security** | Generic hashing, often without domain separation. Vulnerable to cross-circuit hash collision attacks. | **Domain-separated `persistentHash`** with unique prefixes: `"election:admin:v1"`, `"election:commitment:v1"`, `"election:nullifier:v1"`. |
+| **Admin governance** | Admin is hardcoded or wallet-based. Anyone with the admin wallet can act. | **Hash-locked admin key**. `adminKeyHash = deriveAdminKey(sk)` stored on-chain. Admin proves knowledge of pre-image inside a ZK circuit to close elections. |
+| **Merkle path computation** | Typically server-side or SDK-assisted. Introduces a trusted intermediary. | **Fully browser-side**. The dapp's [`merkle.ts`](dapp/lib/merkle.ts) builds the tree and resolves paths entirely in the voter's browser. No server. |
+| **Scalability** | Flat voter lists. Grows linearly with voter count. | **2^10 = 1,024 voters** per tree with constant-size root. Scales with zero gas increase. |
+| **Frontend** | Minimal CLI or single-page demo. | **5-page production app**: Landing + Credential Generator, Admin Portal (CSV/JSON/bulk import, 1k mock generation), Voter Booth, Live Audit Dashboard, User Activity Tracker. |
+| **Design quality** | Developer-oriented, unstyled. | **Coinbase Institutional Editorial** design system with adaptive dark/light mode, glassmorphism panels, and micro-animations. |
+| **Testing** | Basic deployment tests. | **6 pure circuit unit tests** via Vitest covering key derivation, commitment hashing, nullifier uniqueness, leaf hashing, sibling hashing, and full Merkle root computation. |
+| **Deployment** | Local-only or undeployed. | **Deployed to Preprod Testnet** + **live Vercel demo** at [private-election-system-dapp.vercel.app](https://private-election-system-dapp.vercel.app/). |
+
+### Architectural Superiority — Visual Summary
 
 ```
+  TYPICAL PRIVATE VOTING                         SHADOWVOTE
+  ─────────────────────                         ───────────
+
+  Wallet address → on-chain voter list           Secret key → commitment hash → Merkle leaf
+  (identity exposed)                             (identity hidden from everyone)
+
+  Phase 1: Commit (tx #1)                        Single castVote transaction
+  Phase 2: Reveal (tx #2)                        (nullifier + vote in one ZK proof)
+  (2 transactions, 2 gas fees)                   (1 transaction, 1 gas fee)
+
+  Admin = privileged wallet                      Admin = ZK-proven key holder
+  (wallet leak = election compromised)           (secret never on-chain)
+
+  All voters stored on-chain                     Only 32-byte Merkle root on-chain
+  (O(n) storage cost)                            (O(1) storage cost)
+
+  Server computes Merkle paths                   Browser computes Merkle paths
+  (trusted server dependency)                    (zero server trust)
+```
+
+> [!TIP]
+> **Bottom line:** ShadowVote fulfills every requirement of the "Private Voting — anonymous ballots with publicly verifiable tallies" project idea. Beyond that, it replaces the common commit-reveal pattern with a superior single-proof, commitment-based, nullifier-driven architecture — delivering stronger anonymity, lower gas costs, no trusted intermediaries, and a production-ready frontend.
+
+---
+
+## 📝 Commit History (18 Meaningful Commits)
+
+```
+11095af  docs: update documentation for private election system README
+2b447af  feat: add ZKIR circuits and compiled contract interface for cast vote and election closure
+a6e42df  docs: replace compile screenshot with actual terminal compile output showing circuits
+a9da41d  docs: fix block explorer URL to use /contracts/
+f182a09  docs: replace mock deployment screenshot with actual Night Scan block explorer screenshot
+0e3f848  docs: add successful compile and deployment screenshots to README
+c5e50b2  feat: initialize private election system project structure with Next.js and Midnight SDK
+fd14c62  docs: update example contract address to deployed preprod address
+48b05a9  feat: default contract address state to NEXT_PUBLIC_DEPLOYED_CONTRACT_ADDRESS
+5642e2d  docs: add explorer 404 troubleshooting guide to README
+be35ce0  feat: configure centralized dotenv and add contract explorer links
+6276534  docs: polish README with badges, architecture diagram, tables, and collapsible sections
 ce30893  docs: update README with submission requirements and separation explanation
 42d24b1  feat: add user dashboard and global dark/light mode toggler
 24207fe  feat: implement admin portal and live audit dashboard
