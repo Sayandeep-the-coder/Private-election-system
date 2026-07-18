@@ -9,6 +9,7 @@ import { useWallet } from '../../context/WalletContext';
 import { type MidnightNetwork } from '../../lib/midnight';
 import { useTheme } from '../../context/ThemeContext';
 import { castVote, queryElectionState } from '../../lib/election';
+import { DEPLOYED_CONTRACT_ADDRESS } from '../../lib/network-config';
 import { pureCircuits } from '../../../contract/src/index';
 import { buildMerkleTree } from '../../lib/merkle';
 
@@ -35,7 +36,7 @@ export default function VoterPage() {
   } = useWallet();
 
   // Election Connection State
-  const [contractAddress, setContractAddress] = useState<string>('');
+  const [contractAddress, setContractAddress] = useState<string>(DEPLOYED_CONTRACT_ADDRESS);
   const [loadingElection, setLoadingElection] = useState<boolean>(false);
   const [electionError, setElectionError] = useState<string | null>(null);
   const [electionState, setElectionState] = useState<any | null>(null);

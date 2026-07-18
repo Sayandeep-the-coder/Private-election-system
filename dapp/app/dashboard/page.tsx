@@ -9,11 +9,11 @@ import { createPatchedPublicDataProvider } from '../../lib/midnight';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { queryElectionState } from '../../lib/election';
 import { useTheme } from '../../context/ThemeContext';
-import { NETWORK_ENDPOINTS, type MidnightNetwork } from '../../lib/network-config';
+import { NETWORK_ENDPOINTS, type MidnightNetwork, DEPLOYED_CONTRACT_ADDRESS } from '../../lib/network-config';
 
 export default function DashboardPage() {
   const { theme, toggleTheme } = useTheme();
-  const [contractAddress, setContractAddress] = useState<string>('');
+  const [contractAddress, setContractAddress] = useState<string>(DEPLOYED_CONTRACT_ADDRESS);
   const [network, setNetwork] = useState<string>('preview');
   const [connecting, setConnecting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
