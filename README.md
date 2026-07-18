@@ -1,141 +1,330 @@
-# 🗳️ ShadowVote: Private ZK Election System
+<p align="center">
+  <img src="https://img.shields.io/badge/Midnight-Network-0052ff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDIyYzUuNTIzIDAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTB6Ii8+PHBhdGggZD0iTTIgMTJoMjAiLz48PHBhdGggZD0iTTEyIDJhMTUuMyAxNS4zIDAgMCAxIDQgMTAgMTUuMyAxNS4zIDAgMCAxLTQgMTAgMTUuMyAxNS4zIDAgMCAxLTQtMTAgMTUuMyAxNS4zIDAgMCAxIDQtMTB6Ii8+PC9zdmc+" alt="Midnight Network" />
+  <img src="https://img.shields.io/badge/Compact-Smart_Contract-0a0b0d?style=for-the-badge" alt="Compact" />
+  <img src="https://img.shields.io/badge/Zero--Knowledge-Proofs-05b169?style=for-the-badge" alt="ZK Proofs" />
+  <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Tests-6%20Passing-05b169?style=for-the-badge" alt="Tests" />
+</p>
 
-ShadowVote is a decentralized, private, and trustless election system built on the **Midnight Network**. By utilizing zero-knowledge proofs (ZKP), ShadowVote enables voters to cast completely anonymous votes that are mathematically verified against an allowlist, without revealing their identity, their wallet address, or their chosen candidate.
+<h1 align="center">🗳️ ShadowVote</h1>
+<h3 align="center">Private Zero-Knowledge Election System on Midnight Network</h3>
+
+<p align="center">
+  <i>Cast anonymous, mathematically verified ballots without revealing your identity, wallet address, or candidate choice — to anyone.</i>
+</p>
 
 ---
 
-## 💡 Initial Product Idea
-**ShadowVote** is designed to solve trust, anonymity, and coercion-resistance issues in decentralized governance (such as DAOs, corporate boards, and private committees). By combining off-chain Merkle membership trees with on-device zero-knowledge proving, it allows organizations to run verified elections where members prove they are on the eligible voter list and have not voted yet, without revealing their wallet address, identity, or specific candidate choice to anyone—including DAO administrators.
+## 💡 Product Vision
+
+> **ShadowVote** solves the trust, anonymity, and coercion-resistance problems plaguing decentralized governance. By combining off-chain Merkle membership trees with on-device zero-knowledge proving, organizations — DAOs, corporate boards, private committees — can run verified elections where members prove they are on the eligible voter list and have not voted yet, without revealing their wallet address, identity, or specific candidate choice to anyone, including administrators.
+
+---
+
+## ✨ Key Features
+
+| Feature | Description |
+|---|---|
+| 🔒 **True Anonymity** | Votes are cast via ZK proofs. No one can link a ballot to a voter's identity or wallet. |
+| 🌳 **Scalable Off-Chain Merkle Trees** | Supports 500+ voters via depth-10 Merkle trees built off-chain, keeping gas fees minimal. |
+| ⚡ **Local Merkle Path Resolution** | The voter booth computes the ZK membership path entirely in the browser — fully decentralized. |
+| 📦 **Bulk Voter Import & Mock Generator** | Upload CSV/JSON files, bulk-paste commitments, or generate 1,000 mock credentials in one click. |
+| 🔑 **Self-Generated Voter Credentials** | Voters generate private keys locally and share only public commitment hashes. |
+| 🛡️ **Cryptographic Double-Vote Prevention** | Deterministic nullifiers from `hash(secret, electionId)` block duplicate ballots while preserving privacy. |
+| 🌗 **Dark & Light Mode** | Seamless system-aware theme toggling with persistent user preference. |
+
+---
+
+## 🏛️ Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        VOTER'S BROWSER                              │
+│  ┌──────────────┐  ┌──────────────────┐  ┌────────────────────┐    │
+│  │ Secret Key   │  │ Merkle Path      │  │ Selected Candidate │    │
+│  │ (Private)    │  │ (Private)        │  │ (Private)          │    │
+│  └──────┬───────┘  └────────┬─────────┘  └─────────┬──────────┘    │
+│         │                   │                      │               │
+│         └───────────┬───────┴──────────────────────┘               │
+│                     ▼                                               │
+│         ┌──────────────────────┐                                    │
+│         │   ZK PROOF GENERATOR │  ← Runs entirely on-device        │
+│         │   (Compact Circuit)  │                                    │
+│         └──────────┬───────────┘                                    │
+│                    │                                                │
+└────────────────────┼────────────────────────────────────────────────┘
+                     │  Proof (no private data leaked)
+                     ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                     MIDNIGHT BLOCKCHAIN                              │
+│                                                                     │
+│   allowlistRoot ─── Merkle root of eligible voters (public)         │
+│   tallies ───────── Vote counts per candidate (public)              │
+│   nullifiers ────── Spent nullifier hashes (public)                 │
+│   votingClosed ──── Election open/closed flag (public)              │
+│                                                                     │
+│   ⚠️  NO voter identities, NO wallet links, NO vote choices stored  │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
 ## ⚡ Public State vs. Private Witness
 
-Developing on Midnight involves a strict separation between public on-chain ledger state and private client-side witness data:
+Midnight enforces a strict separation between **public on-chain ledger state** and **private client-side witness data**. This is the core privacy mechanism:
 
-### 1. Public State (On-Chain)
-Public state is stored directly in the contract's ledger on the Midnight blockchain and is visible to all observers:
-- **`allowlistRoot` (Field)**: The Merkle root of the eligible voter commitments allowlist. Used to verify voter membership proofs.
-- **`votingClosed` (Boolean)**: A flag indicating whether the election is open or closed to voting.
-- **`tallies` (Map of Candidate ID to Count)**: Holds the accumulated public vote counts for each candidate option.
-- **`nullifiers` (Map of Nullifier Hash to Null)**: A list of deterministic nullifiers used to prevent double-voting.
+### 🔓 Public State (On-Chain — Visible to All)
 
-### 2. Private Witness (Client-Side)
-Private witnesses are inputs that remain local to the voter's device during transaction execution and are never revealed to the network or the ledger:
-- **Voter Secret Key (Bytes<32>)**: The voter's private key used to compute their public commitment and nullifier.
-- **Merkle Membership Path (MerkleTreePath)**: The cryptographic path of sibling hashes proving that the voter's commitment is included in the on-chain `allowlistRoot`.
-- **Selected Option (Uint<8>)**: The index of the candidate the voter is voting for.
+| Variable | Type | Purpose |
+|---|---|---|
+| `allowlistRoot` | `Field` | Merkle root of eligible voter commitments. Verifies membership proofs. |
+| `votingClosed` | `Boolean` | Flag indicating whether the election accepts votes. |
+| `tallies` | `Map<Uint<256>, Field>` | Accumulated vote counts per candidate index. |
+| `nullifiers` | `Map<Bytes<32>, Null>` | Set of spent nullifier hashes preventing double-voting. |
 
-Inside the zero-knowledge circuit (`castVote`), the prover uses these private witnesses to generate a proof verifying that:
-1. The prover knows a secret key whose public commitment is verified in the Merkle path.
-2. The Merkle path resolves to the contract's public `allowlistRoot`.
-3. The derived nullifier matches `hash(secret, electionId)` and has not been spent.
+### 🔐 Private Witness (Client-Side — Never Leaves Device)
+
+| Witness | Type | Purpose |
+|---|---|---|
+| Voter Secret Key | `Bytes<32>` | Computes the voter's public commitment and unique nullifier. |
+| Merkle Path | `MerkleTreePath` | Proves the voter's commitment exists under the on-chain `allowlistRoot`. |
+| Selected Option | `Uint<8>` | The candidate index the voter is voting for. |
+
+### How the ZK Circuit Works
+
+Inside `castVote`, the prover uses private witnesses to generate a proof that:
+
+1. **Membership** — The prover knows a secret whose commitment is in the Merkle tree
+2. **Root Match** — The Merkle path resolves to the contract's public `allowlistRoot`
+3. **Uniqueness** — The derived nullifier `hash(secret, electionId)` hasn't been spent
+4. **Validity** — The vote is added to the correct candidate tally
+
+> The verifier (blockchain) confirms all of the above **without ever learning the secret, the path, or the vote choice**.
 
 ---
 
-## 🛠️ Technology Stack & Requirements
+## 🛠️ Technology Stack
 
-- **Smart Contract:** [Compact](https://compact.midnight.network/) (Midnight's ZK smart contract language)
-- **Frontend:** Next.js (TypeScript) + TailwindCSS + Lucide Icons + Coinbase Institutional UI Redesign
-- **SDK:** `@midnight-ntwrk/midnight-js` & `@midnight-ntwrk/dapp-connector-api`
-- **Cryptography:** Poseidon-based hashing circuits for Merkle trees and commitment schemes
+| Layer | Technology |
+|---|---|
+| **Smart Contract** | [Compact](https://compact.midnight.network/) — Midnight's ZK contract language |
+| **Frontend** | Next.js 16 · TypeScript · Tailwind CSS v4 · Lucide Icons |
+| **Design System** | Coinbase Institutional Editorial Style (light/dark adaptive) |
+| **Wallet SDK** | `@midnight-ntwrk/midnight-js` · `@midnight-ntwrk/dapp-connector-api` |
+| **Cryptography** | Poseidon hashing · Merkle commitment trees · ZK-SNARK circuits |
+| **Testing** | Vitest · Pure circuit unit tests |
 
 ---
 
-## 🏗️ Generated Proving Directory (`managed/`)
-
-The contract compiles into zero-knowledge intermediate representation (ZKIR) and generates proving and verification keys locally. The generated files are checked into the repository:
+## 📁 Repository Structure
 
 ```
-contract/src/managed/election/
-├── compiler/
-│   └── contract-info.json      # Compiler output metadata
-├── contract/
-│   ├── index.js                # Compiled Javascript ledger state machine
-│   └── index.d.ts              # TypeScript declaration types
-├── keys/
-│   ├── castVote.prover         # Prover key for casting ballot ZK proof
-│   ├── castVote.verifier       # Verifier key for casting ballot ZK proof
-│   ├── closeElection.prover    # Prover key for closing election
-│   └── closeElection.verifier  # Verifier key for closing election
-└── zkir/
-    ├── castVote.zkir           # Zero-Knowledge Intermediate Representation for castVote
-    └── closeElection.zkir      # Zero-Knowledge Intermediate Representation for closeElection
+shadowvote/
+│
+├── contract/                          # ZK Smart Contract (Compact)
+│   ├── src/
+│   │   ├── election.compact           # The ZK smart contract source
+│   │   ├── election.test.ts           # 6 unit tests (vitest)
+│   │   ├── index.ts                   # Contract exports
+│   │   └── managed/                   # ⬇️ Generated compilation output
+│   │       └── election/
+│   │           ├── compiler/
+│   │           │   └── contract-info.json
+│   │           ├── contract/
+│   │           │   ├── index.js       # Compiled ledger state machine
+│   │           │   └── index.d.ts     # TypeScript declarations
+│   │           ├── keys/
+│   │           │   ├── castVote.prover
+│   │           │   ├── castVote.verifier
+│   │           │   ├── closeElection.prover
+│   │           │   └── closeElection.verifier
+│   │           └── zkir/
+│   │               ├── castVote.zkir
+│   │               └── closeElection.zkir
+│   └── package.json
+│
+├── dapp/                              # Next.js Frontend Application
+│   ├── app/
+│   │   ├── page.tsx                   # Landing page & credential generator
+│   │   ├── admin/page.tsx             # Admin portal (deploy & manage)
+│   │   ├── voter/page.tsx             # Voter booth (authenticate & vote)
+│   │   ├── dashboard/page.tsx         # Live audit & tallies dashboard
+│   │   ├── user-dashboard/page.tsx    # User activity & history tracker
+│   │   ├── globals.css                # Coinbase theme tokens (light/dark)
+│   │   └── layout.tsx                 # Root layout with Inter font
+│   ├── context/
+│   │   ├── WalletContext.tsx           # Global Midnight wallet provider
+│   │   └── ThemeContext.tsx            # Dark/light mode provider
+│   ├── components/
+│   │   └── Providers.tsx              # Combined context wrapper
+│   ├── lib/
+│   │   ├── election.ts               # Contract interaction helpers
+│   │   ├── merkle.ts                  # Off-chain Merkle tree builder
+│   │   └── midnight.ts               # Wallet & provider setup
+│   └── package.json
+│
+├── README.md
+└── .gitignore
 ```
 
 ---
 
-## 🚀 Deployed Contract Address (Preview Testnet)
+## 🚀 Deployed Contract
 
-The ShadowVote election contract has been successfully deployed and verified on the **Midnight Preview Testnet**:
+The ShadowVote election contract has been deployed and verified on the **Midnight Preprod Testnet**:
 
-- **Contract Address:** `0100000000000000000000000000000000000000000000000000000000000000` *(Example address deployed to local Sandbox / Preview)*
-- **Preprod Testnet Deployment:** `01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9`
+```
+Network:   Preprod Testnet
+Address:   01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9
+Status:    ✅ Deployed & Verified
+```
 
 ---
 
-## 🛠️ How to Compile & Run Locally
+## 🔧 Setup & Run Locally
 
 ### Prerequisites
-- **Node.js:** v18+
-- **Docker:** for running the local Midnight sandbox environment
-- **Compact Compiler:** installed and available in your environment path
 
-### 1. Build and Compile the Compact Contract
-To compile the ZK circuit and generate contract bindings:
+| Requirement | Version |
+|---|---|
+| Node.js | v18+ |
+| Docker | Latest (for local Midnight sandbox) |
+| Compact Compiler | Installed & in PATH |
+
+### Step 1 — Compile the Smart Contract
+
 ```bash
 cd contract
 compact compile src/election.compact
 ```
 
-#### Successful Compile Output:
-```bash
+<details>
+<summary>📸 Successful Compile Output</summary>
+
+```
 $ compact compile src/election.compact
 Compiling src/election.compact...
+
 Circuits compiled successfully:
-  - castVote
-  - closeElection
-Prover & verifier keys generated in contract/src/managed/election/keys/
-ZKIR files written in contract/src/managed/election/zkir/
-TypeScript bindings written in contract/src/managed/election/contract/
+  ✓ castVote
+  ✓ closeElection
+
+Prover & verifier keys → contract/src/managed/election/keys/
+ZKIR files            → contract/src/managed/election/zkir/
+TypeScript bindings   → contract/src/managed/election/contract/
 ```
 
-### 2. Run the Test Suite
-To verify smart contract logic and witnesses:
+</details>
+
+### Step 2 — Run the Test Suite
+
 ```bash
 cd contract
 npm run test
 ```
 
-#### Successful Test Execution:
+<details>
+<summary>📸 Successful Test Output</summary>
+
 ```
- RUN  v4.1.10 C:/Desktop/Private election system/contract
+ RUN  v4.1.10
 
  ✓ src/election.test.ts (6 tests) 25ms
 
  Test Files  1 passed (1)
       Tests  6 passed (6)
-   Start at  11:52:10
    Duration  704ms
 ```
 
-### 3. Run the Next.js Web App
-Install all dependencies and run the Next.js development server:
+</details>
+
+### Step 3 — Launch the Frontend
+
 ```bash
-# From the root workspace directory
+# From repository root
 npm install
 npm run dev -w dapp
 ```
-Open `http://localhost:3000` to access the dApp.
+
+Open **http://localhost:3000** in your browser.
 
 ---
 
-## 📋 Submission Checklist (Proof of Accomplishment)
+## 📖 User Guide
 
-- [x] **Toolchain & Compiler Verification**: Verified using `compact compile`.
-- [x] **Passing Test Suite**: Executed using `vitest` under the `contract/` workspace.
-- [x] **Generated `managed/` Directory**: Circuits, proving keys, and verification keys checked in.
-- [x] **Deployed Contract Address**: Visible contract address deployed to Preprod Testnet.
-- [x] **Product Idea**: Outlined in the README.
-- [x] **State Separation**: Detailed explanations for Public State vs. Private Witness provided.
-- [x] **Meaningful Commits**: Staged and committed in 5 distinct milestones.
+<table>
+<tr>
+<td width="50%">
+
+### 1️⃣ Generate Credentials
+Go to the landing page and use the **Credential Generator** to create:
+- A **Private Secret Key** (keep this safe!)
+- A **Public Commitment Hash** (share with the election admin)
+
+</td>
+<td width="50%">
+
+### 2️⃣ Set Up Election (Admin)
+In the **Admin Portal** (`/admin`):
+- Add voters (single, bulk CSV, or batch-generate mocks)
+- Define the poll question and candidates
+- Click **Deploy Election** to publish on-chain
+
+</td>
+</tr>
+<tr>
+<td>
+
+### 3️⃣ Cast Anonymous Ballot
+In the **Voter Booth** (`/voter`):
+- Enter the contract address
+- Authenticate with your secret key
+- Select your candidate and submit a **ZK-proven ballot**
+
+</td>
+<td>
+
+### 4️⃣ View Live Results
+In the **Dashboard** (`/dashboard`):
+- Watch real-time, verified vote counts
+- Inspect spent nullifiers for audit
+- Admin can close the election to lock the final tally
+
+</td>
+</tr>
+</table>
+
+---
+
+## ✅ Submission Checklist
+
+| Requirement | Status | Evidence |
+|---|---|---|
+| Toolchain installed & `compact compile` works | ✅ Done | Compile output with circuits listed |
+| Passing test suite | ✅ Done | 6/6 tests passing via `vitest` |
+| Generated `managed/` directory present | ✅ Done | Circuits + keys checked into repo |
+| Contract deployed to Preprod | ✅ Done | Address documented above |
+| Initial product idea paragraph | ✅ Done | See [Product Vision](#-product-vision) |
+| Public state vs. private witness explanation | ✅ Done | See [detailed section](#-public-state-vs-private-witness) |
+| Minimum 5 meaningful commits | ✅ Done | See commit history below |
+| Public GitHub repo with README.md | ✅ Done | You're reading it |
+| Setup instructions | ✅ Done | See [Setup & Run Locally](#-setup--run-locally) |
+
+---
+
+## 📝 Commit History
+
+```
+ce30893  docs: update README with submission requirements and separation explanation
+42d24b1  feat: add user dashboard and global dark/light mode toggler
+24207fe  feat: implement admin portal and live audit dashboard
+6a04044  feat: redesign homepage and voter booth in coinbase editorial style
+15aaab5  feat: implement global wallet connection context and helper libraries
+7dddf56  feat: initialize private election system contract, circuits, and tests
+```
+
+---
+
+<p align="center">
+  <sub>Built with 🛡️ on <a href="https://midnight.network">Midnight Network</a> · Powered by Zero-Knowledge Proofs</sub>
+</p>
