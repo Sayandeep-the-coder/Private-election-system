@@ -175,11 +175,11 @@ The ShadowVote election contract has been deployed and verified on the **Midnigh
 
 ```
 Network:   Preprod Testnet
-Address:   01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9
+Address:   d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe
 Status:    ✅ Deployed & Verified
 ```
 
-- 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9)
+- 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/d7f0ea96087e1355813fb2cd217124793557becc3cb2debc2cc1e259678b84fe)
 
 > [!WARNING]
 > **Troubleshooting Block Explorer 404 Errors:**
