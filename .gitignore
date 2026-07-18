@@ -1,12 +1,28 @@
+# ──────────────────────────────────────────────
 # Dependencies
+# ──────────────────────────────────────────────
 node_modules/
-/npm-debug.log*
+.pnp
+.pnp.js
+.pnp.cjs
 
-# Next.js build outputs
+# ──────────────────────────────────────────────
+# Next.js
+# ──────────────────────────────────────────────
 .next/
 out/
+build/
 
-# Environments
+# ──────────────────────────────────────────────
+# Midnight / Compact (keep managed/ checked in)
+# ──────────────────────────────────────────────
+# NOTE: contract/src/managed/ is intentionally
+# tracked so reviewers can verify compiled
+# circuits, keys, and ZKIR without recompiling.
+
+# ──────────────────────────────────────────────
+# Environment & Secrets
+# ──────────────────────────────────────────────
 .env
 .env.*
 .env.local
@@ -14,12 +30,66 @@ out/
 .env.test.local
 .env.production.local
 
-# Logs
+# ──────────────────────────────────────────────
+# Package manager logs & caches
+# ──────────────────────────────────────────────
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/install-state.gz
 
-# System Files
+# ──────────────────────────────────────────────
+# IDE / Editor
+# ──────────────────────────────────────────────
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ──────────────────────────────────────────────
+# Testing & Coverage
+# ──────────────────────────────────────────────
+coverage/
+*.lcov
+.nyc_output
+
+# ──────────────────────────────────────────────
+# TypeScript
+# ──────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ──────────────────────────────────────────────
+# OS generated files
+# ──────────────────────────────────────────────
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ──────────────────────────────────────────────
+# Docker (local Midnight sandbox volumes)
+# ──────────────────────────────────────────────
+docker-compose.override.yml
+.docker/
+
+# ──────────────────────────────────────────────
+# Misc
+# ──────────────────────────────────────────────
+.agents/
+*.tgz
+.cache
+.turbo
+.vercel
+.output

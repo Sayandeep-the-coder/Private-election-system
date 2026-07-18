@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Midnight-Network-0052ff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTEyIDIyYzUuNTIzIDAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTB6Ii8+PHBhdGggZD0iTTIgMTJoMjAiLz48PHBhdGggZD0iTTEyIDJhMTUuMyAxNS4zIDAgMCAxIDQgMTAgMTUuMyAxNS4zIDAgMCAxLTQgMTAgMTUuMyAxNS4zIDAgMCAxLTQtMTAgMTUuMyAxNS4zIDAgMCAxIDQtMTB6Ii8+PC9zdmc+" alt="Midnight Network" />
+  <img src="https://img.shields.io/badge/Midnight-Network-0052ff?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0wIDE4Yy00LjQxIDAtOC0zLjU5LTgtOHMzLjU5LTggOC04IDggMy41OSA4IDgtMy41OSA4LTggOHoiLz48cmVjdCB4PSIxMSIgeT0iNyIgd2lkdGg9IjIiIGhlaWdodD0iMiIgcng9Ii4zIi8+PHJlY3QgeD0iMTEiIHk9IjExIiB3aWR0aD0iMiIgaGVpZ2h0PSIyIiByeD0iLjMiLz48cmVjdCB4PSIxMSIgeT0iMTUiIHdpZHRoPSIyIiBoZWlnaHQ9IjIiIHJ4PSIuMyIvPjwvc3ZnPg==" alt="Midnight Network" />
   <img src="https://img.shields.io/badge/Compact-Smart_Contract-0a0b0d?style=for-the-badge" alt="Compact" />
   <img src="https://img.shields.io/badge/Zero--Knowledge-Proofs-05b169?style=for-the-badge" alt="ZK Proofs" />
   <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js" alt="Next.js" />
@@ -178,6 +178,8 @@ Network:   Preprod Testnet
 Address:   01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9
 Status:    ✅ Deployed & Verified
 ```
+
+- 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9)
 
 ---
 

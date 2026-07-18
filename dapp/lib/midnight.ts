@@ -7,20 +7,21 @@ import { Transaction, LedgerParameters, ZswapChainState } from '@midnight-ntwrk/
 import { ContractState } from '@midnight-ntwrk/compact-runtime';
 import type { PublicDataProvider } from '@midnight-ntwrk/midnight-js-types';
 
-export type MidnightNetwork = 'undeployed' | 'preview' | 'preprod';
+import { NETWORK_ENDPOINTS, type MidnightNetwork } from './network-config';
+export type { MidnightNetwork } from './network-config';
 
 const FALLBACK_ENDPOINTS = {
   preview: {
-    indexerHttp: 'https://indexer.preview.midnight.network/api/v4/graphql',
-    indexerWs: 'wss://indexer.preview.midnight.network/api/v4/graphql/ws',
+    indexerHttp: NETWORK_ENDPOINTS.preview.http,
+    indexerWs: NETWORK_ENDPOINTS.preview.ws,
   },
   preprod: {
-    indexerHttp: 'https://indexer.preprod.midnight.network/api/v4/graphql',
-    indexerWs: 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws',
+    indexerHttp: NETWORK_ENDPOINTS.preprod.http,
+    indexerWs: NETWORK_ENDPOINTS.preprod.ws,
   },
   undeployed: {
-    indexerHttp: 'http://localhost:8088/api/v3/graphql',
-    indexerWs: 'ws://localhost:8088/api/v3/graphql/ws',
+    indexerHttp: NETWORK_ENDPOINTS.undeployed.http,
+    indexerWs: NETWORK_ENDPOINTS.undeployed.ws,
   },
 };
 

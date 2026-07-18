@@ -9,6 +9,7 @@ import { createPatchedPublicDataProvider } from '../../lib/midnight';
 import { setNetworkId } from '@midnight-ntwrk/midnight-js-network-id';
 import { queryElectionState } from '../../lib/election';
 import { useTheme } from '../../context/ThemeContext';
+import { NETWORK_ENDPOINTS, type MidnightNetwork } from '../../lib/network-config';
 
 export default function DashboardPage() {
   const { theme, toggleTheme } = useTheme();
@@ -28,24 +29,11 @@ export default function DashboardPage() {
   const [isLive, setIsLive] = useState<boolean>(false);
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const NETWORK_ENDPOINTS: Record<string, { http: string, ws: string }> = {
-    preview: {
-      http: 'https://indexer.preview.midnight.network/api/v4/graphql',
-      ws: 'wss://indexer.preview.midnight.network/api/v4/graphql/ws',
-    },
-    preprod: {
-      http: 'https://indexer.preprod.midnight.network/api/v4/graphql',
-      ws: 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws',
-    },
-    undeployed: {
-      http: 'http://localhost:8088/api/v3/graphql',
-      ws: 'ws://localhost:8088/api/v3/graphql/ws',
-    }
-  };
+
 
   const fetchLedger = async (addr: string, netToUse?: string) => {
     // 1. Resolve network and indexer endpoints
-    const activeNet = netToUse || network;
+    const activeNet = (netToUse || network) as MidnightNetwork;
     setNetworkId(activeNet as any);
     const endpoints = NETWORK_ENDPOINTS[activeNet] || NETWORK_ENDPOINTS.preview;
     const providers = {
