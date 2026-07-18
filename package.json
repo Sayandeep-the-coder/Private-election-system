@@ -1,0 +1,9 @@
+{
+  "name": "private-election-system",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "contract",
+    "dapp"
+  ]
+}

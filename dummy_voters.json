@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Demo Voter #1",
+    "secretHex": "25e58f203450bf18f97f8de55bffbaea1356a51e95c791b16b33f7a2756b599e",
+    "commitmentHex": "2d8f813bb843b0c9561859dc784bd790fb5c6f0ae9df5efb23501189ae1c3443"
+  },
+  {
+    "name": "Demo Voter #2",
+    "secretHex": "802074171182298781de89a5e1684245a0c4ae975614c0d588ff90098b44c7da",
+    "commitmentHex": "efe18a5c28e9a9758491a07e599481804a9c53a6c36cf721d895acc6eff423ce"
+  },
+  {
+    "name": "Demo Voter #3",
+    "secretHex": "5908b3bcd20e9e39dc235809aeb153c810ec6e51663588e6d9e2df53badb54f4",
+    "commitmentHex": "0220dc8a3015ccdbea036cffd14c1e0ddb53164597e866dbe3b8b42cea5ac3c1"
+  },
+  {
+    "name": "Demo Voter #4",
+    "secretHex": "ff6c841c571926b546598620197c6e73675bbf0d48651e0d725eb07c3c07b09e",
+    "commitmentHex": "94994ecce928c5fe0a05df207f008dc33d62d3957578a5fc5cb3dbc6b9565e2e"
+  },
+  {
+    "name": "Demo Voter #5",
+    "secretHex": "90fb8a136ffa3b68f6d3b99e7aba18bc07431ddc79a42b99f2d563353d240f67",
+    "commitmentHex": "e6c9ea3ed8c342b62a4e51044c11e8aa3345c903cd8ded67a6b57c0d05cda638"
+  }
+]
