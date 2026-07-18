@@ -202,25 +202,21 @@ Status:    ✅ Deployed & Verified
 
 ### Step 1 — Compile the Smart Contract
 
+Run the compiler from the project root directory:
+
 ```bash
-cd contract
-compact compile src/election.compact
+compact compile contract/src/election.compact contract/src/managed
 ```
 
 <details>
 <summary>📸 Successful Compile Output</summary>
 
 ```
-$ compact compile src/election.compact
-Compiling src/election.compact...
-
-Circuits compiled successfully:
-  ✓ castVote
-  ✓ closeElection
-
-Prover & verifier keys → contract/src/managed/election/keys/
-ZKIR files            → contract/src/managed/election/zkir/
-TypeScript bindings   → contract/src/managed/election/contract/
+$ compact compile contract/src/election.compact contract/src/managed
+Compiling 2 circuits:
+  circuit "castVote" (k=14, rows=11069)
+  circuit "closeElection" (k=13, rows=4178)
+Overall progress [==============================] 2/2
 ```
 
 ![Successful Compile Output](assets/compile_output.png)
