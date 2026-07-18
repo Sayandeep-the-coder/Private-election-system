@@ -181,6 +181,11 @@ Status:    ✅ Deployed & Verified
 
 - 🔍 **Preprod Block Explorer:** [View Contract on Explorer](https://explorer.preprod.midnight.network/contract/01a4e8d3df24cf23fbc06813ca01f4c7bb920e54d3e8ad6f59b6bf73082fa2c9)
 
+> [!WARNING]
+> **Troubleshooting Block Explorer 404 Errors:**
+> If you click the block explorer link above and encounter a `404: This page could not be found` page, it is because the contract address provided is a placeholder/example. The explorer will return a 404 for any address that has not been deployed on that active network ledger.
+> To see a live explorer page, deploy a contract using the **Admin Portal** (`/admin`), copy the generated contract address from your wallet connection, and paste it into the explorer search or update the URL path.
+
 ---
 
 ## 🔧 Setup & Run Locally
